@@ -90,7 +90,8 @@ export default function SignInSide() {
     const userResponce = await axios.post( API_URL.Authentication.GET_USER_BY_EMAIL,logingData);
     console.log('userResponce', userResponce);
     if(userResponce.data.user.email === email){
-      localStorage.setItem('session-token', response?.data?.accessToken)
+      localStorage.setItem('user-details', userResponce?.data);
+      localStorage.setItem('session-token', response?.data?.accessToken);
       navigate('/home');
     }
     
