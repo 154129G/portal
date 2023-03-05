@@ -7,7 +7,7 @@ import axios from "axios";
     if(error.response.status === 401){
         const res =  await axios.post(AuthService + '/refreshToken', {}, {withCredentials: true});
         if(res.status == 200){
-            console.log('tttttttttttttttt' ,res)
+            console.log('tttttttttt' ,res)
         }
     }
  });
