@@ -1,6 +1,10 @@
-import * as React from 'react';
+import React, { useState, useEffect }  from 'react';
+import { useNavigate } from "react-router-dom";
+import { API_URL } from '../utility/API';
+import axios  from 'axios';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Grid from '@material-ui/core/Grid';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,6 +13,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -27,6 +38,8 @@ import ItemBar from '../components/itemBar'
 import { Scrollbars } from 'react-custom-scrollbars';
 
 import Setings from '../components/setings'
+import Avatar from '../components/avatar';
+import AvatarComponent from '../components/avatar';
 
 const drawerWidth = 240;
 
@@ -96,6 +109,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
+  const navigate = useNavigate();
 
   const sideBarData = [
     {icon:<img src={Dashboard}  height={35} width={35}/> , itemText:'Dashboard'},
@@ -113,15 +127,47 @@ export default function MiniDrawer() {
   ];
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-
+  const [userDetails, setUserDetails] = React.useState(true);
+  const [ openLogOut, setOpenLogOut ] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
+  useEffect(() => {
+    const userEmail = localStorage.getItem('user-details');
+    getUserData()
+   
+  }, []);
+
+  const  getUserData = async () =>{
+    const userEmail = localStorage.getItem('user-details');
+    const token = localStorage.getItem('session-token');
+    const userResponce =  await axios.post( API_URL.Authentication.GET_USER_BY_EMAIL,{email: userEmail});
+    const name = `Hi  ${userResponce.data.user.firstName}`;
+    setUserDetails(name);
+  };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleLogOut = () => {
+    setOpenLogOut(true);
+  };
+  
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpenLogOut(false);
+  };
+
+  const handleSignOut = () => {
+    localStorage.setItem('user-details', '');
+    localStorage.setItem('session-token', '');
+    navigate('/');
+    setOpenLogOut(false);
+  };
+  
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -140,9 +186,34 @@ export default function MiniDrawer() {
           >
             <img src={logo} alt="BigCo Inc. logo" height={50} width={50}/>
           </IconButton>
+          <Grid  xs={12} sm={8} md={8} lg={8}>
           <Typography variant="h6"style={{ marginLeft:15}} noWrap component="div">
             Mini variant drawer
           </Typography>
+          </Grid>
+          <Grid  xs={12} sm={2} md={2} lg={2}>
+          <Typography variant="sub-title">
+           {userDetails}
+          </Typography>
+          </Grid>
+          <Grid  container spacing={2} xs={12} sm={2} md={2} lg={2}>
+          <Grid  item   xs={12} sm={10} md={10} lg={10}>
+          <AvatarComponent style={{marginRight:20}}/>
+          </Grid>
+          <Grid  item  xs={12} sm={1} md={1} lg={1} >
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleLogOut}
+            edge="start"
+            alignItems = 'right'
+            style={{marginRight: 10}}
+          >
+            <ExitToAppIcon fontSize='large'/>
+          </IconButton>
+          </Grid>
+          </Grid>
+          
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} >
@@ -219,6 +290,27 @@ export default function MiniDrawer() {
         <DrawerHeader />
         <ItemBar/>
       </Box>
+      <Dialog
+        open={openLogOut}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Log out..."}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          Are you sure you want to sign out ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSignOut}>Yes</Button>
+          <Button onClick={handleClose} autoFocus>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
