@@ -117,7 +117,7 @@ export default function SignInSide() {
     <Grid container component="main" className={classes.root}>
       {isLoading ? <VortexSpinner /> : null}
       <CssBaseline />
-      <Grid item xs={false} sm={6} md={7} s>
+      <Grid item xs={false} sm={6} md={7} >
         <img
           src={image}
           style={{
@@ -176,16 +176,16 @@ export default function SignInSide() {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                {/* <Link href="/" variant="body2">
+            <Grid container style={{margin: '10px 0px'}}>
+              <Grid item xs= {12} sm={6} md={6} lg ={6}>
+                <Link to="/signUp" variant="body2">
                   Forgot password?
-                </Link> */}
+                </Link>
               </Grid>
-              <Grid item>
-                {/* <Link to="./signUp" variant="body2">
+              <Grid item xs= {12} sm={6} md={6} lg ={6}> 
+                <Link to="/signUp"  variant="body2">
                   {"Don't have an account? Sign Up"}
-                </Link> */}
+                </Link>
               </Grid>
             </Grid>
             <Box mt={5}>

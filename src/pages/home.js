@@ -34,12 +34,13 @@ import  logo01 from '../assets/img/logo.png';
 //import  logo from '../assets/logo01.jpg';
 import Dashboard  from '../assets/icons/dashboard.png';
 import Templates  from '../assets/icons/template.png';
-import ItemBar from '../components/itemBar'
 import { Scrollbars } from 'react-custom-scrollbars';
 
+import DashBoardLayOut from '../containers/dashbords/DashbordLayOut';
 import Setings from '../components/setings'
 import Avatar from '../components/avatar';
 import AvatarComponent from '../components/avatar';
+
 
 const drawerWidth = 240;
 
@@ -288,7 +289,7 @@ export default function MiniDrawer() {
       
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <ItemBar/>
+        <DashBoardLayOut/>
       </Box>
       <Dialog
         open={openLogOut}
