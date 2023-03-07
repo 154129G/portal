@@ -5,7 +5,6 @@ import { BrowserRouter as Router ,  Route  , Routes } from 'react-router-dom';
 import SignUp  from './pages/signUp'
 import SignIn from './pages/signIn.js'
 import Home  from './pages/home'
-import Layout from './pages/lay-out'
 import Landing from './pages/landing'
 import OwnShopPage from './pages/OwnShopPage'
 import NotFound from './pages/notFound'
