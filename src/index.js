@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider, createTheme , responsiveFontSizes , unstable_createMuiStrictModeTheme  } from '@mui/material/styles';
 
-import {store} from "./store/store";
+import store from './store/store';
 import  { Provider }  from "react-redux"
 import '../src/utility/interceptors'
 
