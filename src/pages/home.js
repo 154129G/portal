@@ -1,5 +1,7 @@
 import React, { useState, useEffect }  from 'react';
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+
 import { API_URL } from '../utility/API';
 import axios  from 'axios';
 import { styled, useTheme } from '@mui/material/styles';
@@ -40,6 +42,8 @@ import DashBoardLayOut from '../containers/dashbords/DashbordLayOut';
 import Setings from '../components/setings'
 import Avatar from '../components/avatar';
 import AvatarComponent from '../components/avatar';
+
+import { SET_SELECTED_DASHBOARD } from '../store/type';
 
 
 const drawerWidth = 240;
@@ -111,30 +115,40 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const sideBarData = [
-    {icon:<img src={Dashboard}  height={35} width={35}/> , itemText:'Dashboard'},
-    {icon: <img src={Templates}  height={35} width={35}/> , itemText:'Templates'}, 
-    {icon:<InboxIcon /> , itemText:'Send email'} ,
-    {icon: <MailIcon />, itemText: 'Drafts'} ,
-    {icon:<img src={Dashboard}  height={35} width={35}/> , itemText:'Dashboard'},
-    {icon: <img src={Templates}  height={35} width={35}/> , itemText:'Templates'}, 
-    {icon:<InboxIcon /> , itemText:'Send email'} ,
-    {icon: <MailIcon />, itemText: 'Drafts'} ,
-    {icon:<img src={Dashboard}  height={35} width={35}/> , itemText:'Dashboard'},
-    {icon: <img src={Templates}  height={35} width={35}/> , itemText:'Templates'}, 
-    {icon:<InboxIcon /> , itemText:'Send email'} ,
-    {icon: <MailIcon />, itemText: 'Drafts'} ,
-  ];
   const theme = useTheme();
+
+  const [ dashboardData, setDashboardData ] = React.useState([
+    { dashboardCode: "MAIN", dashboardName : "Dashboard" , wireframeName: "MainDashboard", permissionCode: 1000,
+      icon:<img src={Dashboard}  height={35} width={35}/>, 
+      tabs: [ {index: 0 , tabName: 'Tab 01' , wireframeName: 'tab01', permissionCode: 1001},
+              {index: 1 , tabName: 'Tab 02' , wireframeName: 'tab02', permissionCode: 1002},
+              {index: 2 , tabName: 'Tab 03' , wireframeName: 'tab03', permissionCode: 1003},
+              {index: 3 , tabName: 'Tab 04' , wireframeName: 'tab04', permissionCode: 1004}
+    ]
+   },
+   { dashboardCode: "STATIC", dashboardName : "Template" , wireframeName: "MainDashboard", permissionCode: 1000,
+      icon: <img src={Templates}  height={35} width={35}/>,
+      tabs: [ {index: 0 , tabName: 'Tab T 01' , wireframeName: 'tab01', permissionCode: 1001},
+              {index: 1 , tabName: 'Tab T 02' , wireframeName: 'tab02', permissionCode: 1002},
+              {index: 2 , tabName: 'Tab T 03' , wireframeName: 'tab03', permissionCode: 1003},
+              {index: 3 , tabName: 'Tab T 04' , wireframeName: 'tab04', permissionCode: 1004}
+    ]
+   }
+  ]);
   const [open, setOpen] = React.useState(true);
   const [userDetails, setUserDetails] = React.useState(true);
   const [ openLogOut, setOpenLogOut ] = React.useState(false);
+  const [ selectedDashboardData, setSelectedDashboardData ] = React.useState({});
+
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
   useEffect(() => {
+    setSelectedDashboardData(dashboardData[0])
     const userEmail = localStorage.getItem('user-details');
     getUserData()
    
@@ -144,7 +158,7 @@ export default function MiniDrawer() {
     const userEmail = localStorage.getItem('user-details');
     const token = localStorage.getItem('session-token');
     const userResponce =  await axios.post( API_URL.Authentication.GET_USER_BY_EMAIL,{email: userEmail});
-    const name = `Hi  ${userResponce.data.user.firstName}`;
+    const name = `Hi  ${userResponce?.data?.user?.firstName}`;
     setUserDetails(name);
   };
   const handleDrawerClose = () => {
@@ -152,6 +166,13 @@ export default function MiniDrawer() {
   };
   const handleLogOut = () => {
     setOpenLogOut(true);
+  };
+  const handleDashboard = (data) => {
+    setSelectedDashboardData(data);
+    // dispatch({
+    //   type: SET_SELECTED_DASHBOARD,
+    //   payload: data
+    // })
   };
   
   const handleClickOpen = () => {
@@ -236,8 +257,8 @@ export default function MiniDrawer() {
         autoHeightMax={600}
         style={{ width:"100%", height: '100% '}}>
         <List style = {{marginTop: 15}}>
-          {sideBarData.map((data, index) => (
-            <ListItem key={data.itemText} disablePadding sx={{ display: 'block' }}>
+          {dashboardData.map((data, index) => (
+            <ListItem key={data.dashboardName} disablePadding sx={{ display: 'block' }} onClick = {()=>{handleDashboard(data)}}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -254,7 +275,7 @@ export default function MiniDrawer() {
                 >
                   {data.icon}
                 </ListItemIcon>
-                <ListItemText primary={data.itemText} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={data.dashboardName} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -289,7 +310,7 @@ export default function MiniDrawer() {
       
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <DashBoardLayOut/>
+        <DashBoardLayOut  dashboardData={selectedDashboardData}/>
       </Box>
       <Dialog
         open={openLogOut}

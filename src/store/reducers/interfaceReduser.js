@@ -7,21 +7,20 @@ const initialState = {
 };
 
 
-const interfaceReducer = (state = initialState , action) => {
-    switch (action.type){
+
+ const interfaceReducer = (state = {
+    selectedDashboard: {}
+  }, action) => {
+
+    switch(action.type){
         case SET_SELECTED_DASHBOARD:
-            return {
-                ...state,
+            let selectedStore = {
                 selectedDashboard: action.payload
             }
-        case SET_SELECTED_TAB_INDEX:
-                return {
-                    ...state,
-                    selectedTabIndex: action.payload
-                }
+            return selectedStore;
         default:
-            return state
+            return state;
     }
-}
+};
 
 export default interfaceReducer;
