@@ -5,9 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider, createTheme , responsiveFontSizes , unstable_createMuiStrictModeTheme  } from '@mui/material/styles';
 
-import store from './store/store';
+import store from "./store/store";
 import  { Provider }  from "react-redux"
-import '../src/utility/interceptors'
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from './store/store';
+import ErrorBound from './utility/errorFix';
 
 let theme = createTheme();
 theme = unstable_createMuiStrictModeTheme();
@@ -42,7 +44,10 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
     <Provider store ={store}>
-      <App />
+    
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
     </ThemeProvider>
   </React.StrictMode>

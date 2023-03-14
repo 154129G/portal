@@ -104,7 +104,8 @@ export default function SignInSide() {
         logingData
       );
       if (userResponce.data.user.email === email) {
-        localStorage.setItem("user-details", userResponce.data.user.email);
+        dispatch(setUser(userResponce.data.user));
+        localStorage.setItem("user-details", JSON.stringify(userResponce.data.user));
         localStorage.setItem("session-token", response?.data?.accessToken);
         navigate("/home");
       }

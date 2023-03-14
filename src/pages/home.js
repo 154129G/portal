@@ -1,6 +1,6 @@
 import React, { useState, useEffect }  from 'react';
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { API_URL } from '../utility/API';
 import axios  from 'axios';
@@ -43,7 +43,7 @@ import Setings from '../components/setings'
 import Avatar from '../components/avatar';
 import AvatarComponent from '../components/avatar';
 
-import { SET_SELECTED_DASHBOARD } from '../store/type';
+import { removeUser } from '../store/reducers/userSlice';
 
 
 const drawerWidth = 240;
@@ -118,7 +118,8 @@ export default function MiniDrawer() {
   const dispatch = useDispatch();
 
   const theme = useTheme();
-
+ 
+  const userObject = useSelector(store=>store?.user?.user);
   const [ dashboardData, setDashboardData ] = React.useState([
     { dashboardCode: "MAIN", dashboardName : "Dashboard" , wireframeName: "MainDashboard", permissionCode: 1000,
       icon:<img src={Dashboard}  height={35} width={35}/>, 
@@ -155,10 +156,10 @@ export default function MiniDrawer() {
   }, []);
 
   const  getUserData = async () =>{
-    const userEmail = localStorage.getItem('user-details');
-    const token = localStorage.getItem('session-token');
-    const userResponce =  await axios.post( API_URL.Authentication.GET_USER_BY_EMAIL,{email: userEmail});
-    const name = `Hi  ${userResponce?.data?.user?.firstName}`;
+    const user = localStorage.getItem('user-details');
+    // const token = localStorage.getItem('session-token');
+    // const userResponce =  await axios.post( API_URL.Authentication.GET_USER_BY_EMAIL,{email: userEmail});
+    const name = `Hi  ${ userObject?.firstName}`;
     setUserDetails(name);
   };
   const handleDrawerClose = () => {
@@ -166,6 +167,7 @@ export default function MiniDrawer() {
   };
   const handleLogOut = () => {
     setOpenLogOut(true);
+    dispatch(removeUser())
   };
   const handleDashboard = (data) => {
     setSelectedDashboardData(data);
